@@ -17,7 +17,6 @@ public class GamePanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		System.out.println("Panel çiziliyor");
 		// oyun arka planı
 		g.drawImage(Assets.background, 0, 0, getWidth(), getHeight(), null);
 		// objeleri çiz
