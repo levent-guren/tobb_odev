@@ -53,7 +53,7 @@ public class StateMenu extends GameState {
 
 		// yarı saydam arka plan
 		g.setColor(new Color(0, 0, 0, 150));
-		g.fillRoundRect(boxX, boxY, boxW, boxH, 8, 8);
+		g.fillRoundRect(boxX, boxY, boxW, boxH, 32, 32);
 
 		// menü seçenekleri
 		// koda yazılan string objeleri her seferinde yaratılmaz. java derleyicisinin
@@ -110,12 +110,6 @@ public class StateMenu extends GameState {
 					fontHeight + marginY * 2);
 
 		}
-		// Hata ayıklama için kutuyu çiz
-//		g.setColor(Color.RED);
-//		g.draw(rectStart);
-//		g.draw(rectSave);
-//		g.draw(rectExit);
-
 	}
 
 	@Override
@@ -124,24 +118,21 @@ public class StateMenu extends GameState {
 			// start seçildi
 			GameEngine.getInstance().setState(new StatePlay());
 			GameEngine.getGameWorld().setPlaying(true);
+			GameEngine.getGameWorld().start();
 		} else if (menuSave.equals(selectedMenu)) {
 			// save seçildi
 			new FileOperations().save();
-			GameEngine.getInstance().setState(new StatePlay());
 			GameEngine.getGameWorld().setPlaying(true);
+			GameEngine.getInstance().setState(new StatePlay());
 		} else if (menuLoad.equals(selectedMenu)) {
 			// load seçildi
 			new FileOperations().load();
-			// GameEngine.getInstance().setState(new StatePlay());
 			GameEngine.getGameWorld().setPlaying(true);
+			// GameEngine.getInstance().setState(new StatePlay());
 		} else if (menuExit.equals(selectedMenu)) {
 			// exit seçildi
 			System.exit(0);
 		}
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
 	}
 
 	@Override
@@ -160,15 +151,19 @@ public class StateMenu extends GameState {
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {
-	}
-
-	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == 27 && GameEngine.getGameWorld().isPlaying()) {
 			GameEngine.getInstance().setState(new StatePlay());
 		}
 
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
 	}
 
 }

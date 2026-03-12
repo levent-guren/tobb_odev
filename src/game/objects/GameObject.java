@@ -22,8 +22,8 @@ public abstract class GameObject implements Serializable {
 
 	public GameObject(BufferedImage image) {
 		this.image = image;
-		setWidth(50);
-		setHeight(70);
+		setWidth(70);
+		setHeight(90);
 	}
 
 	public GameObject(BufferedImage image, double x, double y, double speed) {

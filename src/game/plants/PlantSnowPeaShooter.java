@@ -1,6 +1,5 @@
 package game.plants;
 
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -20,6 +19,7 @@ public class PlantSnowPeaShooter extends GamePlant {
 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
+		// load yapıldığında resim tekrar veriliyor.
 		setImage(Assets.plantSnowPea);
 	}
 
@@ -37,9 +37,12 @@ public class PlantSnowPeaShooter extends GamePlant {
 		}
 	}
 
-	@Override
-	public void mousePressed(MouseEvent e) {
+	public long getLastShootTime() {
+		return lastShootTime;
+	}
 
+	public void setLastShootTime(long lastShootTime) {
+		this.lastShootTime = lastShootTime;
 	}
 
 }

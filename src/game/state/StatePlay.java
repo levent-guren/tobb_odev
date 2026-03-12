@@ -37,7 +37,7 @@ public class StatePlay extends GameState {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		GameEngine.getGameWorld().getSeedBank().mouseMoved(e);
+		// GameEngine.getGameWorld().getSeedBank().mouseMoved(e);
 	}
 
 	@Override

@@ -36,6 +36,10 @@ public class GameEngine {
 		return instance.gameWorld;
 	}
 
+	public void setGameWorld(GameWorld gameWorld) {
+		this.gameWorld = gameWorld;
+	}
+
 	public GamePanel getGamePanel() {
 		return gamePanel;
 	}
@@ -43,7 +47,6 @@ public class GameEngine {
 	public void init() {
 		gameWorld = new GameWorld();
 		gamePanel = new GamePanel(this, gameWorld);
-		gameWorld.getSeedBank().setSun(1000);
 	}
 
 	public int getGameAreaWidth() {

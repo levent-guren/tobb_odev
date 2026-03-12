@@ -22,8 +22,8 @@ public abstract class GamePlant extends GameObject {
 
 	public GamePlant(BufferedImage image, SeedObject creator) {
 		super(image);
-		setHeight(50);
-		setWidth(40);
+		setHeight(80);
+		setWidth(50);
 		this.creator = creator;
 	}
 
@@ -42,7 +42,7 @@ public abstract class GamePlant extends GameObject {
 	@Override
 	public void draw(Graphics g) {
 		drawShadow(g);
-		g.drawImage(getImage(), (int) getX() + 5, (int) getY() + 10, getWidth(), getHeight() + 10, null);
+		g.drawImage(getImage(), (int) getX() + 5, (int) getY() + 10, getWidth() - 5, getHeight() - 20, null);
 	}
 
 	public void drawShadow(Graphics g) {

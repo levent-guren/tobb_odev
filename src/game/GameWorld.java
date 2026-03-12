@@ -3,32 +3,37 @@ package game;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import game.objects.GameObject;
-import game.objects.SeedBank;
+import game.objects.seed.SeedBank;
 import game.objects.zombie.BasicZombie;
 import game.objects.zombie.FastZombie;
 import game.objects.zombie.GameZombie;
 import game.objects.zombie.RunZombie;
 import game.objects.zombie.TankZombie;
 import game.plants.GamePlant;
+import game.state.StateWin;
 
-public class GameWorld {
+public class GameWorld implements Serializable {
+	private static final long serialVersionUID = 2680412234437533990L;
 	private List<GamePlant> plants = new ArrayList<>();
 	private List<GameObject> bullets = new ArrayList<>();
 	private List<GameZombie> zombies = new ArrayList<>();
-	private List<GameObject> other = new ArrayList<>();
+	private transient List<GameObject> other = new ArrayList<>();
 	private Grid grid = new Grid();
 	private long lastCreatedZombieTime;
-	private long zombieCreateInterval = 10000;
+	private long lastCreatedZombieWave;
 	private boolean isPlaying;
+	private boolean zombieWave;
+	private int zombieWaveCount;
+	private int createdZombieForWave;
 
 	public GameWorld() {
 		other.add(new SeedBank(10, 0));
-		// ilk 5 saniye zombie üretilmesin
-		lastCreatedZombieTime = System.currentTimeMillis() + 5000;
+		newGame();
 	}
 
 	public SeedBank getSeedBank() {
@@ -96,8 +101,33 @@ public class GameWorld {
 	}
 
 	private void checkZombies() {
+		// zombie dalgası var mı?
+		if (System.currentTimeMillis() - lastCreatedZombieWave > Constants.ZOMBIE_WAVE_CREATE_INTERVAL) {
+			zombieWave = true;
+			zombieWaveCount++;
+			createdZombieForWave = 0;
+			lastCreatedZombieWave = System.currentTimeMillis();
+			System.out.println("Wave:" + zombieWaveCount);
+		}
+		if (zombieWave) {
+			// wave zamanı daha sık zombie üretilecek
+			if (System.currentTimeMillis() - lastCreatedZombieTime > Constants.ZOMBIE_CREATE_INTERVAL_FOR_WAVE) {
+				addNewZombie();
+				createdZombieForWave++;
+				if (createdZombieForWave > Constants.ZOMBIE_CREATE_COUNT_FOR_WAVE + 2 * zombieWaveCount) {
+					// wave end
+					if (zombieWaveCount >= Constants.MAX_WAVE_COUNT) {
+						GameEngine.getInstance().setState(new StateWin());
+					}
+					zombieWave = false;
+					lastCreatedZombieWave = System.currentTimeMillis();
+					System.out.println("Wave end");
+				}
+				lastCreatedZombieTime = System.currentTimeMillis();
+			}
+		} else
 		// belirli sürelerde rastgele zombie ekle
-		if (System.currentTimeMillis() - lastCreatedZombieTime > zombieCreateInterval) {
+		if (System.currentTimeMillis() - lastCreatedZombieTime > Constants.ZOMBIE_CREATE_INTERVAL) {
 			addNewZombie();
 			lastCreatedZombieTime = System.currentTimeMillis();
 		}
@@ -109,7 +139,7 @@ public class GameWorld {
 
 	private GameZombie getRandomZombie() {
 		GameZombie newZombie;
-		int type = (int) (Math.random() * 4); // zombie count
+		int type = (int) (Math.random() * Constants.ZOMBIE_COUNT);
 		switch (type) {
 		case 0: {
 			newZombie = new BasicZombie();
@@ -126,8 +156,8 @@ public class GameWorld {
 		default:
 			newZombie = new TankZombie();
 		}
-		int lane = (int) (Math.random() * 5); // lane count
-		Rectangle box = grid.getWorldRect(9, lane);
+		int lane = (int) (Math.random() * Constants.LANE_COUNT); // lane count
+		Rectangle box = grid.getWorldRect(Constants.GRID_COLUMN_COUNT, lane);
 		newZombie.setX(box.getX() + 150);
 		newZombie.setY(box.getY());
 		return newZombie;
@@ -139,6 +169,13 @@ public class GameWorld {
 
 	public boolean isPlaying() {
 		return isPlaying;
+	}
+
+	public void start() {
+		// ilk saniye zombie üretilmesin. Initial time kadar beklensin.
+		lastCreatedZombieTime = System.currentTimeMillis() + Constants.ZOMBIE_CREATE_INITIAL_TIME
+				- Constants.ZOMBIE_CREATE_INTERVAL;
+		lastCreatedZombieWave = lastCreatedZombieTime;
 	}
 
 	public void setPlaying(boolean isPlaying) {
@@ -169,6 +206,14 @@ public class GameWorld {
 		this.lastCreatedZombieTime = lastCreatedZombieTime;
 	}
 
+	public long getLastCreatedZombieWave() {
+		return lastCreatedZombieWave;
+	}
+
+	public void setLastCreatedZombieWave(long lastCreatedZombieWave) {
+		this.lastCreatedZombieWave = lastCreatedZombieWave;
+	}
+
 	public void setPlants(List<GamePlant> plants) {
 		this.plants = plants;
 	}
@@ -179,6 +224,44 @@ public class GameWorld {
 
 	public void setGrid(Grid grid) {
 		this.grid = grid;
+	}
+
+	public boolean isZombieWave() {
+		return zombieWave;
+	}
+
+	public void setZombieWave(boolean zombieWave) {
+		this.zombieWave = zombieWave;
+	}
+
+	public int getZombieWaveCount() {
+		return zombieWaveCount;
+	}
+
+	public void setZombieWaveCount(int zombieWaveCount) {
+		this.zombieWaveCount = zombieWaveCount;
+	}
+
+	public void newGame() {
+		plants.clear();
+		bullets.clear();
+		zombies.clear();
+		grid.clear();
+		zombieWaveCount = 0;
+		zombieWave = false;
+		getSeedBank().setSun(Constants.START_SUN_VALUE);
+	}
+
+	public void readFrom(GameWorld other) {
+		this.plants = other.plants;
+		this.bullets = other.bullets;
+		this.zombies = other.zombies;
+		this.grid = other.grid;
+		this.lastCreatedZombieTime = other.lastCreatedZombieTime;
+		this.lastCreatedZombieWave = other.lastCreatedZombieWave;
+		this.isPlaying = other.isPlaying;
+		this.zombieWave = other.zombieWave;
+		this.zombieWaveCount = other.zombieWaveCount;
 	}
 
 }

@@ -23,12 +23,13 @@ public class GamePanel extends JPanel {
 	private GameWorld gameWorld;
 	private BufferedImage background;
 
+	private boolean drawFps;
+
 	GamePanel(GameEngine gameEngine, GameWorld gameWorld) {
 		this.gameEngine = gameEngine;
 		this.gameWorld = gameWorld;
 		// Oyun ekranı boyutu
-		setPreferredSize(new Dimension(900, 500));
-		// setBackground(new Color(30, 160, 30)); // çim yeşili gibi
+		setPreferredSize(new Dimension(Constants.GAME_PANEL_WIDTH, Constants.GAME_PANEL_HEIGHT));
 		setFocusable(true);
 		try {
 			background = ImageIO.read(getClass().getResource("/resources/frontyard.jpg"));
@@ -39,6 +40,9 @@ public class GamePanel extends JPanel {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				gameEngine.keyPressed(e);
+				if (e.getKeyChar() == 'f') {
+					drawFps = !drawFps;
+				}
 			}
 		});
 		this.addMouseListener(new MouseAdapter() {
@@ -87,25 +91,27 @@ public class GamePanel extends JPanel {
 		gameEngine.getState().draw(g2d);
 
 		gameEngine.addFrameCount();
-		drawFPS(g, gameEngine.getFps());
+		if (drawFps) {
+			drawFPS(g, gameEngine.getFps());
+		}
 
 	}
 
 	void drawFPS(Graphics g, int fps) {
 		String text = "FPS: " + fps;
-
-		int padding = 5;
-		int x = getWidth() - 80;
-		int y = 20;
+		g.setFont(Assets.fontBebas);
 
 		FontMetrics fm = g.getFontMetrics();
 		int w = fm.stringWidth(text);
 		int h = fm.getHeight();
 
+		int padding = 5;
+		int x = getWidth() - w - 10;
+		int y = h;
+
 		// yarı saydam arka plan
 		g.setColor(new Color(0, 0, 0, 150));
 		g.fillRoundRect(x - padding, y - h + padding, w + padding * 2, h, 8, 8);
-		g.setFont(Assets.fontBebas);
 		g.setColor(Color.WHITE);
 		g.drawString(text, x, y);
 	}

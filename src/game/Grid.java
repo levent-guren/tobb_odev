@@ -2,16 +2,18 @@ package game;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import game.plants.GamePlant;
 
-public class Grid {
-	private GamePlant[][] grid = new GamePlant[9][5];
+public class Grid implements Serializable {
+	private static final long serialVersionUID = 684076289042630833L;
+	private GamePlant[][] grid = new GamePlant[Constants.GRID_COLUMN_COUNT][Constants.LANE_COUNT];
 
 	public Point getGridCoord(int worldX, int worldY) {
 		int x = (worldX - 162) / 52;
 		int y = (worldY - 67) / 82;
-		if (x < 0 || x > 8 || y < 0 || y > 4) {
+		if (x < 0 || x >= Constants.GRID_COLUMN_COUNT || y < 0 || y >= Constants.LANE_COUNT) {
 			return null;
 		}
 		return new Point(x, y);
@@ -33,8 +35,8 @@ public class Grid {
 	}
 
 	public void clearDeadPlants() {
-		for (int x = 0; x < 9; x++) {
-			for (int y = 0; y < 5; y++) {
+		for (int x = 0; x < Constants.GRID_COLUMN_COUNT; x++) {
+			for (int y = 0; y < Constants.LANE_COUNT; y++) {
 				if (grid[x][y] != null && !grid[x][y].isAlive()) {
 					grid[x][y] = null;
 				}
@@ -48,6 +50,14 @@ public class Grid {
 
 	public void setGrid(GamePlant[][] grid) {
 		this.grid = grid;
+	}
+
+	public void clear() {
+		for (int x = 0; x < 9; x++) {
+			for (int y = 0; y < 5; y++) {
+				grid[x][y] = null;
+			}
+		}
 	}
 
 }
