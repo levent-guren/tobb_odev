@@ -6,6 +6,8 @@ import game.plants.GamePlant;
 import game.plants.PlantCherryBomb;
 
 public class SeedCherryBomb extends SeedObject {
+	private static final long serialVersionUID = 1L;
+
 	public SeedCherryBomb(BufferedImage image, int x, int y, int sunValue, SeedBank seedBank) {
 		super(image, x, y, sunValue, seedBank);
 	}

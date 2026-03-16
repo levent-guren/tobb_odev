@@ -5,12 +5,14 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 
 import game.Assets;
 import game.GameEngine;
 import game.plants.GamePlant;
 
-public abstract class SeedObject {
+public abstract class SeedObject implements Serializable {
+	private static final long serialVersionUID = -5066332939132025148L;
 	private transient SeedBank seedBank;
 	private int sunValue;
 	private int x;

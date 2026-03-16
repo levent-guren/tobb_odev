@@ -6,6 +6,8 @@ import game.plants.GamePlant;
 import game.plants.PlantPeaShooter;
 
 public class SeedPeaShooter extends SeedObject {
+	private static final long serialVersionUID = -2831704880318874056L;
+
 	public SeedPeaShooter(BufferedImage image, int x, int y, int sunValue, SeedBank seedBank) {
 		super(image, x, y, sunValue, seedBank);
 	}
