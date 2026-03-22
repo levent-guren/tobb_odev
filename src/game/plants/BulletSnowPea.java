@@ -28,9 +28,9 @@ public class BulletSnowPea extends GameObject {
 		for (int i = 0; i < zombies.size(); i++) {
 			if (zombies.get(i).getBoundry().contains(getX() + getWidth(), getY())) {
 				// hit zombie
-				zombies.get(i).doDamage(getDamage());
 				zombies.get(i).setSlow(true);
 				setAlive(false);
+				zombies.get(i).doDamage(getDamage());
 			}
 		}
 		super.update();

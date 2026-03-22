@@ -3,9 +3,12 @@ package game.objects.zombie;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+import game.Constants;
 import game.GameEngine;
+import game.GameWorld;
 import game.objects.GameObject;
 import game.plants.GamePlant;
+import game.state.StateWin;
 
 public abstract class GameZombie extends GameObject {
 	private static final long serialVersionUID = 2444668173931549429L;
@@ -41,6 +44,24 @@ public abstract class GameZombie extends GameObject {
 
 	public boolean isSlow() {
 		return slow;
+	}
+
+	@Override
+	public void doDamage(double damage) {
+		super.doDamage(damage);
+		if (!isAlive()) {
+			// bu zombie öldüyse ve son 1 zombie kaldıysa (ölen dahil)
+			// win durumunu kontrol et
+			// zombie wave'ler bitti ise oyunu kazandık
+			GameWorld world = GameEngine.getGameWorld();
+			System.out.println("zombie count:" + world.getZombies().size());
+			System.out.println("wave count:" + world.getZombieWaveCount());
+
+			if (world.getZombies().size() == 1 && world.getZombieWaveCount() >= Constants.MAX_WAVE_COUNT
+					&& !world.isZombieWave()) {
+				GameEngine.getInstance().setState(new StateWin());
+			}
+		}
 	}
 
 }

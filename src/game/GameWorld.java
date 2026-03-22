@@ -15,7 +15,6 @@ import game.objects.zombie.GameZombie;
 import game.objects.zombie.RunZombie;
 import game.objects.zombie.TankZombie;
 import game.plants.GamePlant;
-import game.state.StateWin;
 
 public class GameWorld implements Serializable {
 	private static final long serialVersionUID = 2680412234437533990L;
@@ -101,8 +100,9 @@ public class GameWorld implements Serializable {
 	}
 
 	private void checkZombies() {
-		// zombie dalgası var mı?
-		if (System.currentTimeMillis() - lastCreatedZombieWave > Constants.ZOMBIE_WAVE_CREATE_INTERVAL) {
+		// zombie dalgası yok ve son zombie dalgası da geçmemişse
+		if (zombieWaveCount < Constants.MAX_WAVE_COUNT
+				&& System.currentTimeMillis() - lastCreatedZombieWave > Constants.ZOMBIE_WAVE_CREATE_INTERVAL) {
 			zombieWave = true;
 			zombieWaveCount++;
 			createdZombieForWave = 0;
@@ -116,9 +116,6 @@ public class GameWorld implements Serializable {
 				createdZombieForWave++;
 				if (createdZombieForWave > Constants.ZOMBIE_CREATE_COUNT_FOR_WAVE + 2 * zombieWaveCount) {
 					// wave end
-					if (zombieWaveCount >= Constants.MAX_WAVE_COUNT) {
-						GameEngine.getInstance().setState(new StateWin());
-					}
 					zombieWave = false;
 					lastCreatedZombieWave = System.currentTimeMillis();
 					System.out.println("Wave end");
@@ -127,7 +124,9 @@ public class GameWorld implements Serializable {
 			}
 		} else
 		// belirli sürelerde rastgele zombie ekle
-		if (System.currentTimeMillis() - lastCreatedZombieTime > Constants.ZOMBIE_CREATE_INTERVAL) {
+		// son zombie dalgasından sonra zombei üretme
+		if (zombieWaveCount < Constants.MAX_WAVE_COUNT
+				&& System.currentTimeMillis() - lastCreatedZombieTime > Constants.ZOMBIE_CREATE_INTERVAL) {
 			addNewZombie();
 			lastCreatedZombieTime = System.currentTimeMillis();
 		}
