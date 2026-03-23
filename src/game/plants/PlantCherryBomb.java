@@ -12,7 +12,7 @@ import game.objects.zombie.GameZombie;
 public class PlantCherryBomb extends GamePlant {
 	private static final long serialVersionUID = 7859077773650484795L;
 	private long createTime;
-	private long bombTime = 4000; // 4 second
+	private long bombTime = 500; // 0.5 second
 
 	public PlantCherryBomb(SeedObject creator) {
 		super(Assets.plantCherryBomb, creator);
