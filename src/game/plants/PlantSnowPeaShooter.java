@@ -1,7 +1,10 @@
 package game.plants;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+
+import javax.swing.SwingUtilities;
 
 import game.Assets;
 import game.GameEngine;
@@ -43,6 +46,14 @@ public class PlantSnowPeaShooter extends GamePlant {
 
 	public void setLastShootTime(long lastShootTime) {
 		this.lastShootTime = lastShootTime;
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if (getBoundry().contains(e.getX(), e.getY()) && SwingUtilities.isRightMouseButton(e)) {
+			setAlive(false);
+			GameEngine.getGameWorld().getSeedBank().addSun(175 / 2);
+		}
 	}
 
 }

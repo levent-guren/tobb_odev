@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
+import game.objects.freezer.Freezer;
 import game.plants.GamePlant;
 
 public class Grid implements Serializable {
@@ -32,6 +33,10 @@ public class Grid implements Serializable {
 
 	public GamePlant getObject(int gridX, int gridY) {
 		return grid[gridX][gridY];
+	}
+
+	public Freezer getFreeze(int gridY) {
+		return GameEngine.getGameWorld().getFreezers().get(gridY);
 	}
 
 	public void clearDeadPlants() {

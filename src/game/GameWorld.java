@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import game.objects.GameObject;
+import game.objects.freezer.Freezer;
 import game.objects.seed.SeedBank;
 import game.objects.zombie.BasicZombie;
 import game.objects.zombie.FastZombie;
@@ -19,10 +20,11 @@ import game.plants.GamePlant;
 import game.state.StateWin;
 
 public class GameWorld implements Serializable {
-	private static final long serialVersionUID = 2680412234437533990L;
+	private static final long serialVersionUID = 2680412234437533991L;
 	private List<GamePlant> plants = new ArrayList<>();
 	private List<GameObject> bullets = new ArrayList<>();
 	private List<GameZombie> zombies = new ArrayList<>();
+	private transient List<Freezer> freezers = new ArrayList<>();
 	private transient List<GameObject> other = new ArrayList<>();
 	private Grid grid = new Grid();
 	private long lastCreatedZombieTime;
@@ -31,9 +33,17 @@ public class GameWorld implements Serializable {
 	private int zombieWaveCount;
 	private int createdZombie;
 	private long nextZombieCreateTime;
+	private transient Timer2 timer2;
+	private transient Timer timer;
 
 	public GameWorld() {
 		other.add(new SeedBank(10, 0));
+		for (int i = 0; i < Constants.LANE_COUNT; i++) {
+			Rectangle firstGrid = grid.getWorldRect(0, i);
+
+			Freezer freezer = new Freezer(firstGrid.x - 50, firstGrid.y);
+			freezers.add(freezer);
+		}
 		newGame();
 	}
 
@@ -47,6 +57,14 @@ public class GameWorld implements Serializable {
 
 	public List<GamePlant> getPlants() {
 		return plants;
+	}
+
+	public List<Freezer> getFreezers() {
+		return freezers;
+	}
+
+	public void setFreezers(List<Freezer> freezers) {
+		this.freezers = freezers;
 	}
 
 	public void addPlant(GamePlant plant, Point gridCoord) {
@@ -72,6 +90,9 @@ public class GameWorld implements Serializable {
 		for (int i = 0; i < bullets.size(); i++) {
 			bullets.get(i).draw(g);
 		}
+		for (int i = 0; i < freezers.size(); i++) {
+			freezers.get(i).draw(g);
+		}
 	}
 
 	public void tick() {
@@ -86,6 +107,9 @@ public class GameWorld implements Serializable {
 		}
 		for (int i = 0; i < bullets.size(); i++) {
 			bullets.get(i).update();
+		}
+		for (int i = 0; i < freezers.size(); i++) {
+			freezers.get(i).update();
 		}
 		// yaşamayan plant'leri sil
 		plants.removeIf(p -> !p.isAlive());
@@ -268,4 +292,21 @@ public class GameWorld implements Serializable {
 		zombieWave = false;
 		createdZombie = 0;
 	}
+
+	public Timer getTimer() {
+		return timer;
+	}
+
+	public Timer2 getTimer2() {
+		return timer2;
+	}
+
+	public void setTimer(Timer timer) {
+		this.timer = timer;
+	}
+
+	public void setTimer2(Timer2 timer2) {
+		this.timer2 = timer2;
+	}
+
 }

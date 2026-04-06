@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import javax.swing.SwingUtilities;
+
 import game.Assets;
 import game.GameEngine;
 import game.objects.seed.SeedObject;
@@ -44,7 +46,10 @@ public class PlantSunFlower extends GamePlant {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (flower && getBoundry().contains(e.getX(), e.getY())) {
+		if (getBoundry().contains(e.getX(), e.getY()) && SwingUtilities.isRightMouseButton(e)) {
+			setAlive(false);
+			GameEngine.getGameWorld().getSeedBank().addSun(50 / 2);
+		} else if (flower && getBoundry().contains(e.getX(), e.getY())) {
 			flower = false;
 			lastShootTime = System.currentTimeMillis();
 			GameEngine.getGameWorld().getSeedBank().addSun(getCreator().getSunValue());

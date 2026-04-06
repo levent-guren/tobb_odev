@@ -94,6 +94,8 @@ public class GamePanel extends JPanel {
 		if (drawFps) {
 			drawFPS(g, gameEngine.getFps());
 		}
+		drawTimer(g);
+		drawTimer2(g);
 
 	}
 
@@ -114,6 +116,54 @@ public class GamePanel extends JPanel {
 		g.fillRoundRect(x - padding, y - h + padding, w + padding * 2, h, 8, 8);
 		g.setColor(Color.WHITE);
 		g.drawString(text, x, y);
+	}
+
+	void drawTimer2(Graphics g) {
+		Timer2 timer2 = GameEngine.getGameWorld().getTimer2();
+		if (timer2 != null) {
+			// oyunun en başında oyun başlayana kadar timer yok
+			long time = timer2.getTime();
+
+			String text = "Time: " + time;
+			g.setFont(Assets.fontBebas);
+
+			FontMetrics fm = g.getFontMetrics();
+			int w = fm.stringWidth(text);
+			int h = fm.getHeight();
+
+			int padding = 5;
+			int x = getWidth() - w - 100;
+			int y = h;
+
+			// yarı saydam arka plan
+			g.setColor(new Color(0, 0, 0, 150));
+			g.fillRoundRect(x - padding, y - h + padding, w + padding * 2, h, 8, 8);
+			g.setColor(Color.WHITE);
+			g.drawString(text, x, y);
+		}
+	}
+
+	void drawTimer(Graphics g) {
+		Timer timer = GameEngine.getGameWorld().getTimer();
+		if (timer != null) {
+
+			String text = "Time: " + timer.getTime();
+			g.setFont(Assets.fontBebas);
+
+			FontMetrics fm = g.getFontMetrics();
+			int w = fm.stringWidth(text);
+			int h = fm.getHeight();
+
+			int padding = 5;
+			int x = getWidth() - w - 100;
+			int y = h + h + 10;
+
+			// yarı saydam arka plan
+			g.setColor(new Color(0, 0, 0, 150));
+			g.fillRoundRect(x - padding, y - h + padding, w + padding * 2, h, 8, 8);
+			g.setColor(Color.WHITE);
+			g.drawString(text, x, y);
+		}
 	}
 
 }

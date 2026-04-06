@@ -5,9 +5,29 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import game.GameEngine;
+import game.Timer;
+import game.Timer2;
+import game.objects.freezer.Freezer;
 import game.plants.GamePlant;
 
 public class StatePlay extends GameState {
+	public StatePlay() {
+		Timer timer = GameEngine.getGameWorld().getTimer();
+		if (timer == null) {
+			timer = new Timer();
+			GameEngine.getGameWorld().setTimer(timer);
+			new Thread(timer).start();
+		}
+		Timer2 timer2 = GameEngine.getGameWorld().getTimer2();
+		if (timer2 != null) {
+			// continue
+			timer2.cont();
+		} else {
+			timer2 = new Timer2();
+			GameEngine.getGameWorld().setTimer2(timer2);
+			new Thread(timer2).start();
+		}
+	}
 
 	@Override
 	public void loop() {
@@ -28,6 +48,10 @@ public class StatePlay extends GameState {
 		for (GamePlant plant : GameEngine.getGameWorld().getPlants()) {
 			plant.mousePressed(e);
 		}
+		for (Freezer freezer : GameEngine.getGameWorld().getFreezers()) {
+			freezer.mousePressed(e);
+		}
+
 	}
 
 	@Override

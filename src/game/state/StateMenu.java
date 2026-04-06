@@ -11,6 +11,7 @@ import game.Assets;
 import game.FileOperations;
 import game.GameEngine;
 import game.GamePanel;
+import game.Timer2;
 
 public class StateMenu extends GameState {
 	private String menuStart = "Start";
@@ -22,6 +23,15 @@ public class StateMenu extends GameState {
 	private Rectangle rectLoad;
 	private Rectangle rectExit;
 	private String selectedMenu;
+
+	public StateMenu() {
+		if (GameEngine.getInstance() != null) {
+			Timer2 timer2 = GameEngine.getGameWorld().getTimer2();
+			if (timer2 != null) {
+				timer2.pause();
+			}
+		}
+	}
 
 	@Override
 	public void loop() {

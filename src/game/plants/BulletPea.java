@@ -2,6 +2,7 @@ package game.plants;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import game.Assets;
@@ -10,7 +11,8 @@ import game.objects.GameObject;
 import game.objects.zombie.GameZombie;
 
 public class BulletPea extends GameObject {
-	private static final long serialVersionUID = -858302691978566772L;
+	private static final long serialVersionUID = -858302691978566773L;
+	private List<GameZombie> damagedZombies = new ArrayList<GameZombie>();
 
 	public BulletPea() {
 		super(Assets.bulletPea);
@@ -30,11 +32,16 @@ public class BulletPea extends GameObject {
 	public void update() {
 		List<GameZombie> zombies = GameEngine.getGameWorld().getZombies();
 		for (int i = 0; i < zombies.size(); i++) {
-			if (zombies.get(i).getBoundry().contains(getX() + getWidth(), getY())) {
+			if (!damagedZombies.contains(zombies.get(i))
+					&& zombies.get(i).getBoundry().contains(getX() + getWidth(), getY())) {
 				// hit zombie
 				zombies.get(i).doDamage(getDamage());
-				setAlive(false);
+				damagedZombies.add(zombies.get(i));
+				// setAlive(false);
 			}
+		}
+		if (damagedZombies.size() == 3) {
+			setAlive(false);
 		}
 		super.update();
 		if (getX() > GameEngine.getInstance().getGameAreaWidth()) {
